@@ -1,0 +1,5 @@
+.label {
+    -fx-text-alignment: center;
+    -fx-border-color: black;
+    -fx-font: 36 monospace;
+}
