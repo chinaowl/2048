@@ -7,7 +7,7 @@ import java.util.Random;
  */
 public class Tile {
 
-    TileState state;
+    public TileState state;
     public int number;
     int r;
     int c;
@@ -15,7 +15,14 @@ public class Tile {
     public Tile(int r, int c) {
         this.r = r;
         this.r = c;
-        this.state = TileState.EMPTY;
+        this.state = TileState.DEAD;
+    }
+
+    public Tile(int r, int c, int number) {
+        this.r = r;
+        this.r = c;
+        this.number = number;
+        this.state = TileState.ALIVE;
     }
 
     public void init() {

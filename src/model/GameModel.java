@@ -19,9 +19,9 @@ public class GameModel {
             boardLen = 4;
         }
         board = new Tile[boardLen][boardLen];
-        for (int i = 0; i < boardLen; i++) {
-            for (int j = 0; j < boardLen; j++) {
-                board[i][j] = new Tile(i, j);
+        for (int r = 0; r < boardLen; r++) {
+            for (int c = 0; c < boardLen; c++) {
+                board[r][c] = new Tile(r, c);
             }
         }
         boardFull = false;
@@ -31,15 +31,15 @@ public class GameModel {
         dropTile();
     }
 
-    // Precondition: boardFull is false
     private void dropTile() {
+        if (boardFull) return;
         Random random = new Random();
         boolean success = false;
         while (!success) {
             int r = random.nextInt(4);
             int c = random.nextInt(4);
             Tile tile = board[r][c];
-            if (tile.state == TileState.EMPTY) {
+            if (tile.state == TileState.DEAD) {
                 tile.init();
                 if (tile.number > biggest) {
                     biggest = tile.number;
@@ -51,18 +51,52 @@ public class GameModel {
 
     public void up() {
 
+        dropTile();
     }
 
+    // Algorithm:
+    // Starting from the bottom, check for adjacent matches in each column
+    // If there's a match, the bottommost tile's number doubles and the other tile collapses
+    // All tiles shift as far down as possible
     public void down() {
-        
+        for (int c = 0; c < boardLen; c++) {
+            int r = boardLen - 1;
+            while (r > -1) {
+                Tile currentTile = board[r][c];
+                Tile adjacentAliveTile;
+                int y = r - 1;
+                while (y > -1) {
+                    if (board[y][c].state == TileState.DEAD) {
+                        y--;
+                    } else {
+                        break;
+                    }
+                }
+                if (y > -1) {
+                    adjacentAliveTile = board[y][c];
+                } else {
+                    break;
+                }
+                if (currentTile.number == adjacentAliveTile.number) {
+                    currentTile.number *= 2;
+                    adjacentAliveTile.state = TileState.DEAD;
+                    r = y - 1;
+                } else {
+                    r = y;
+                }
+            }
+        }
+        dropTile();
     }
 
     public void left() {
 
+        dropTile();
     }
 
     public void right() {
 
+        dropTile();
     }
 
     // For debugging purposes

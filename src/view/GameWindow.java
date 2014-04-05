@@ -16,7 +16,7 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
-import model.GameModel;
+import model.*;
 
 /**
  * Created by chinana523 on 4/4/14.
@@ -75,13 +75,20 @@ public class GameWindow extends Application {
     }
 
     private void drawBoard(GridPane grid) {
-        for (int i = 0; i < model.boardLen; i++) {
-            for (int j = 0; j < model.boardLen; j++) {
-                Label tile = new Label(String.valueOf(model.board[i][j].number));
-                tile.setMinHeight(100);
-                tile.setMinWidth(100);
-                tile.setAlignment(Pos.CENTER);
-                grid.add(tile, j, i);
+        grid.getChildren().clear();
+        for (int r = 0; r < model.boardLen; r++) {
+            for (int c = 0; c < model.boardLen; c++) {
+                Tile tile = model.board[r][c];
+                Label label;
+                if (tile.state == TileState.ALIVE) {
+                    label = new Label(String.valueOf(tile.number));
+                } else {
+                    label = new Label();
+                }
+                label.setMinHeight(100);
+                label.setMinWidth(100);
+                label.setAlignment(Pos.CENTER);
+                grid.add(label, c, r);
             }
         }
     }
