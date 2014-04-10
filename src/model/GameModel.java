@@ -127,8 +127,8 @@ public class GameModel {
                     if (r > highestR) {
                         board[highestR][c] = new Tile(currentTile.number);
                         board[r][c].state = TileState.DEAD;
-                        movePossible = true;
                     }
+                    movePossible = true;
                     board[adjacentR][c].state = TileState.DEAD;
                     highestR++;
                     r = adjacentR + 1;
@@ -187,8 +187,8 @@ public class GameModel {
                     if (r < lowestR) {
                         board[lowestR][c] = new Tile(currentTile.getNumber());
                         board[r][c].state = TileState.DEAD;
-                        movePossible = true;
                     }
+                    movePossible = true;
                     board[adjacentR][c].state = TileState.DEAD;
                     lowestR--;
                     r = adjacentR - 1;
@@ -205,7 +205,7 @@ public class GameModel {
         }
         if (movePossible) {
             dropTile();
-        } 
+        }
     }
 
     public void left() {
@@ -243,8 +243,8 @@ public class GameModel {
                     if (c > leftmostC) {
                         board[r][leftmostC] = new Tile(currentTile.getNumber());
                         board[r][c].state = TileState.DEAD;
-                        movePossible = true;
                     }
+                    movePossible = true;
                     board[r][adjacentC].state = TileState.DEAD;
                     leftmostC++;
                     c = adjacentC + 1;
@@ -299,8 +299,8 @@ public class GameModel {
                     if (c < rightmostC) {
                         board[r][rightmostC] = new Tile(currentTile.getNumber());
                         board[r][c].state = TileState.DEAD;
-                        movePossible = true;
                     }
+                    movePossible = true;
                     board[r][adjacentC].state = TileState.DEAD;
                     rightmostC--;
                     c = adjacentC - 1;
