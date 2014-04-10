@@ -76,12 +76,12 @@ public class GameWindow extends Application {
 
     private void drawBoard(GridPane grid) {
         grid.getChildren().clear();
-        for (int r = 0; r < model.boardLen; r++) {
-            for (int c = 0; c < model.boardLen; c++) {
-                Tile tile = model.board[r][c];
+        for (int r = 0; r < model.getBoardLen(); r++) {
+            for (int c = 0; c < model.getBoardLen(); c++) {
+                Tile tile = model.getTile(r, c);
                 Label label;
-                if (tile.state == TileState.ALIVE) {
-                    label = new Label(String.valueOf(tile.number));
+                if (tile.isAlive()) {
+                    label = new Label(String.valueOf(tile.getNumber()));
                 } else {
                     label = new Label();
                 }

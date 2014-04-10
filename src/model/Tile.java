@@ -7,20 +7,14 @@ import java.util.Random;
  */
 public class Tile {
 
-    public TileState state;
-    public int number;
-    int r;
-    int c;
+    TileState state;
+    int number;
 
-    public Tile(int r, int c) {
-        this.r = r;
-        this.r = c;
+    public Tile() {
         this.state = TileState.DEAD;
     }
 
-    public Tile(int r, int c, int number) {
-        this.r = r;
-        this.r = c;
+    public Tile(int number) {
         this.number = number;
         this.state = TileState.ALIVE;
     }
@@ -34,5 +28,15 @@ public class Tile {
             this.number = 2;
         }
     }
+
+    public boolean isAlive() {
+        return this.state == TileState.ALIVE;
+    }
+
+    public boolean isDead() {
+        return this.state == TileState.DEAD;
+    }
+
+    public int getNumber() { return this.number; }
 
 }
