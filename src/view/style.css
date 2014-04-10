@@ -1,5 +1,58 @@
+.root {
+    -fx-background: black;
+}
+
 .label {
     -fx-text-alignment: center;
-    -fx-border-color: black;
+    -fx-border-color: white;
     -fx-font: 36 monospace;
+    -fx-text-fill: white;
+}
+
+#label-empty {
+    -fx-background-color: black;
+}
+
+#label-2 {
+    -fx-background-color: deepskyblue;
+}
+
+#label-4 {
+    -fx-background-color: chartreuse;
+}
+
+#label-8 {
+    -fx-background-color: deeppink;
+}
+
+#label-16 {
+    -fx-background-color: darkorchid;
+}
+
+#label-32 {
+    -fx-background-color: turquoise;
+}
+
+#label-64 {
+    -fx-background-color: lime;
+}
+
+#label-128 {
+    -fx-background-color: purple;
+}
+
+#label-256 {
+    -fx-background-color: aqua;
+}
+
+#label-512 {
+    -fx-background-color: mediumblue;
+}
+
+#label-1024 {
+    -fx-background-color: indigo;
+}
+
+#label-2048 {
+    -fx-background-color: crimson;
 }

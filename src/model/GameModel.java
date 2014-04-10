@@ -359,4 +359,13 @@ public class GameModel {
     public int getBoardLen() {
         return boardLen;
     }
+
+    public boolean getHasWon() {
+        return hasWon;
+    }
+
+    public boolean getHasLost() {
+        return hasLost;
+    }
+
 }

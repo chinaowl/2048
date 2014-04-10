@@ -28,9 +28,7 @@ public class GameModelTest {
         model.printBoard();
 
         model.down();
-        model.printBoard();
 
-        assertTrue(model.getTile(0, 0).isDead());
         assertTrue(model.getTile(3, 0).isAlive());
         assertEquals(2, model.getTile(3, 0).getNumber());
     }
@@ -39,15 +37,11 @@ public class GameModelTest {
     public void testDownTwoTilesInOneCol() {
         model.dropTile(0, 0, 2);
         model.dropTile(1, 0, 2);
-        model.printBoard();
         assertTrue(model.getTile(0, 0).isAlive());
         assertTrue(model.getTile(1, 0).isAlive());
 
         model.down();
-        model.printBoard();
 
-        assertTrue(model.getTile(0, 0).isDead());
-        assertTrue(model.getTile(1, 0).isDead());
         assertTrue(model.getTile(3, 0).isAlive());
         assertEquals(4, model.getTile(3, 0).getNumber());
     }
