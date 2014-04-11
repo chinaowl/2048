@@ -22,7 +22,7 @@ public class Tile {
     public void init() {
         this.state = TileState.ALIVE;
         Random random = new Random();
-        if (random.nextInt(5) < 2) {
+        if (random.nextInt(5) < 1) {
             this.number = 4;
         } else {
             this.number = 2;

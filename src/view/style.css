@@ -1,28 +1,27 @@
 .root {
-    -fx-background: black;
+
 }
 
 .label {
     -fx-text-alignment: center;
-    -fx-border-color: white;
     -fx-font: 36 monospace;
     -fx-text-fill: white;
 }
 
 #label-empty {
-    -fx-background-color: black;
+    -fx-border-color: white;
 }
 
 #label-2 {
-    -fx-background-color: deepskyblue;
+    -fx-background-color: #99CCFF;
 }
 
 #label-4 {
-    -fx-background-color: chartreuse;
+    -fx-background-color: #66CCFF;
 }
 
 #label-8 {
-    -fx-background-color: deeppink;
+    -fx-background-color: #3399FF;
 }
 
 #label-16 {
@@ -34,7 +33,7 @@
 }
 
 #label-64 {
-    -fx-background-color: lime;
+    -fx-background-color: #9999FF;
 }
 
 #label-128 {
@@ -42,7 +41,7 @@
 }
 
 #label-256 {
-    -fx-background-color: aqua;
+    -fx-background-color: #0099CC;
 }
 
 #label-512 {
@@ -50,9 +49,9 @@
 }
 
 #label-1024 {
-    -fx-background-color: indigo;
+    -fx-background-color: #6600CC;
 }
 
 #label-2048 {
-    -fx-background-color: crimson;
+    -fx-background-color: #000099;
 }
