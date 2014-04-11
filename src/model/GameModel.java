@@ -107,7 +107,6 @@ public class GameModel {
 
     private void checkHasLost() {
         if (boardIsFull() && !isMovePossible()) {
-            System.out.println("YOU LOST!");
             hasLost = true;
             return;
         }
@@ -118,7 +117,6 @@ public class GameModel {
             biggest = number;
         if (biggest == goal)
             hasWon = true;
-        System.out.println("Biggest = " + biggest);
     }
 
     private void moveTile(int oldR, int newR, int oldC, int newC, int number) {
