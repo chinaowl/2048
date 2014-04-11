@@ -108,7 +108,6 @@ public class GameModel {
     private void checkHasLost() {
         if (boardIsFull() && !isMovePossible()) {
             hasLost = true;
-            return;
         }
     }
 

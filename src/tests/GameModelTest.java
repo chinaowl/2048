@@ -1,7 +1,6 @@
 package tests;
 
 import model.GameModel;
-import model.Tile;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
