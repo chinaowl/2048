@@ -37,7 +37,6 @@ public class GameWindow extends Application {
     @Override
     public void start(Stage primaryStage) {
         model = new GameModel(2048);
-        model.printBoard();
 
         primaryStage.initStyle(StageStyle.TRANSPARENT);
         primaryStage.setTitle("2048");
@@ -47,6 +46,9 @@ public class GameWindow extends Application {
         grid.setVgap(10);
         grid.setPadding(new Insets(10, 10, 10, 10));
         grid.setAlignment(Pos.CENTER);
+        ColumnConstraints col = new ColumnConstraints();
+        col.setHalignment(HPos.CENTER);
+        grid.getColumnConstraints().add(col);
 
         drawBoard(grid);
 
@@ -67,6 +69,8 @@ public class GameWindow extends Application {
                 } else if (keyEvent.getCode() == KeyCode.RIGHT) {
                     model.right();
                     drawBoard(grid);
+                } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
+                    model.endGame();
                 }
             }
         });
@@ -79,13 +83,23 @@ public class GameWindow extends Application {
     private void drawBoard(GridPane grid) {
         grid.getChildren().clear();
         if (model.getHasWon()) {
-            Label winLabel = new Label("Congratulations! You won!");
+            Label winLabel = new Label("Congratulations!\nYou won!");
+            winLabel.setId("label-message");
             winLabel.setAlignment(Pos.CENTER);
+            Button exit = createExitButton();
+            Button play = createPlayAgainButton();
             grid.add(winLabel, 0, 0);
+            grid.add(play, 0, 1);
+            grid.add(exit, 0, 2);
         } else if (model.getHasLost()) {
-            Label lossLabel = new Label("Too bad! You lost!");
+            Label lossLabel = new Label("Too bad!\nYou lost!");
+            lossLabel.setId("label-message");
             lossLabel.setAlignment(Pos.CENTER);
+            Button exit = createExitButton();
+            Button play = createPlayAgainButton();
             grid.add(lossLabel, 0, 0);
+            grid.add(play, 0, 1);
+            grid.add(exit, 0, 2);
         } else {
             for (int r = 0; r < model.getBoardLen(); r++) {
                 for (int c = 0; c < model.getBoardLen(); c++) {
@@ -105,6 +119,31 @@ public class GameWindow extends Application {
                 }
             }
         }
+    }
+
+    private Button createExitButton() {
+        Button exit = new Button("Quit");
+        exit.setAlignment(Pos.CENTER);
+        exit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                model.endGame();
+            }
+        });
+        return exit;
+    }
+
+    private Button createPlayAgainButton() {
+        Button play = new Button("Play Again");
+        play.setAlignment(Pos.CENTER);
+        play.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                model = new GameModel(2048);
+                drawBoard(grid);
+            }
+        });
+        return play;
     }
 
     // Code source: http://stackoverflow.com/questions/11780115/moving-an-undecorated-stage-in-javafx-2

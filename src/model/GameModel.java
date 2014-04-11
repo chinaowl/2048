@@ -54,12 +54,8 @@ public class GameModel {
         }
     }
 
-    private void dropTile() {
-        if (boardIsFull() && biggest != 2048) {
-            System.out.println("YOU LOST!");
-            hasLost = true;
-            return;
-        }
+    public void dropTile() {
+        checkHasLost();
         Random random = new Random();
         boolean success = false;
         while (!success) {
@@ -68,12 +64,35 @@ public class GameModel {
             Tile tile = board[r][c];
             if (tile.isDead()) {
                 tile.init();
-                if (tile.number > biggest) {
-                    biggest = tile.number;
-                }
+                checkBiggest(tile.number);
                 success = true;
             }
         }
+        checkHasLost();
+    }
+
+    // For debugging purposes
+    public void dropTile(int r, int c, int n) {
+        Tile tile = new Tile(n);
+        board[r][c] = tile;
+    }
+
+    public boolean isMovePossible() {
+        if (!boardIsFull())
+            return false;
+        for (int r = 0; r < boardLen; r++) {
+            for (int c = 0; c < boardLen - 1; c++) {
+                if (board[r][c].number == board[r][c+1].number)
+                    return true;
+            }
+        }
+        for (int c = 0; c < boardLen; c++) {
+            for (int r = 0; r < boardLen - 1; r++) {
+                if (board[r][c].number == board[r+1][c].number)
+                    return true;
+            }
+        }
+        return false;
     }
 
     private boolean boardIsFull() {
@@ -86,10 +105,25 @@ public class GameModel {
         return true;
     }
 
-    // For debugging purposes
-    public void dropTile(int r, int c, int n) {
-        Tile tile = new Tile(n);
-        board[r][c] = tile;
+    private void checkHasLost() {
+        if (boardIsFull() && !isMovePossible()) {
+            System.out.println("YOU LOST!");
+            hasLost = true;
+            return;
+        }
+    }
+
+    private void checkBiggest(int number) {
+        if (number > biggest)
+            biggest = number;
+        if (biggest == goal)
+            hasWon = true;
+        System.out.println("Biggest = " + biggest);
+    }
+
+    private void moveTile(int oldR, int newR, int oldC, int newC, int number) {
+        board[newR][newC] = new Tile(number);
+        board[oldR][oldC].state = TileState.DEAD;
     }
 
     public void up() {
@@ -104,29 +138,21 @@ public class GameModel {
                     continue;
                 }
                 Tile adjacentAliveTile;
-                int adjacentR = r + 1;
-                while (adjacentR < boardLen) {
-                    if (board[adjacentR][c].isDead()) {
-                        adjacentR++;
-                    } else {
-                        break;
-                    }
-                }
+                int adjacentR = findAdjacentUp(r, c);
                 if (adjacentR < boardLen) {
                     adjacentAliveTile = board[adjacentR][c];
                 } else {
                     if (r > highestR) {
-                        board[highestR][c] = new Tile(currentTile.getNumber());
-                        board[r][c].state = TileState.DEAD;
+                        moveTile(r, highestR, c, c, currentTile.number);
                         movePossible = true;
                     }
                     break;
                 }
                 if (currentTile.number == adjacentAliveTile.number) {
                     currentTile.number *= 2;
+                    checkBiggest(currentTile.number);
                     if (r > highestR) {
-                        board[highestR][c] = new Tile(currentTile.number);
-                        board[r][c].state = TileState.DEAD;
+                        moveTile(r, highestR, c, c, currentTile.number);
                     }
                     movePossible = true;
                     board[adjacentR][c].state = TileState.DEAD;
@@ -134,8 +160,7 @@ public class GameModel {
                     r = adjacentR + 1;
                 } else {
                     if (r > highestR) {
-                        board[highestR][c] = new Tile(currentTile.getNumber());
-                        board[r][c].state = TileState.DEAD;
+                        moveTile(r, highestR, c, c, currentTile.number);
                         movePossible = true;
                     }
                     highestR++;
@@ -148,10 +173,18 @@ public class GameModel {
         }
     }
 
-    // Algorithm:
-    // Starting from the bottom, check for adjacent matches in each column
-    // If there's a match, the bottommost tile's number doubles and the other tile collapses
-    // All tiles shift as far down as possible
+    private int findAdjacentUp(int r, int c) {
+        int adjacentR = r + 1;
+        while (adjacentR < boardLen) {
+            if (board[adjacentR][c].isDead()) {
+                adjacentR++;
+            } else {
+                return adjacentR;
+            }
+        }
+        return adjacentR;
+    }
+
     public void down() {
         boolean movePossible = false;
         for (int c = 0; c < boardLen; c++) {
@@ -164,29 +197,21 @@ public class GameModel {
                     continue;
                 }
                 Tile adjacentAliveTile;
-                int adjacentR = r - 1;
-                while (adjacentR > -1) {
-                    if (board[adjacentR][c].isDead()) {
-                        adjacentR--;
-                    } else {
-                        break;
-                    }
-                }
+                int adjacentR = findAdjacentDown(r, c);
                 if (adjacentR > -1) {
                     adjacentAliveTile = board[adjacentR][c];
                 } else {
                     if (r < lowestR) {
-                        board[lowestR][c] = new Tile(currentTile.getNumber());
-                        board[r][c].state = TileState.DEAD;
+                        moveTile(r, lowestR, c, c, currentTile.number);
                         movePossible = true;
                     }
                     break;
                 }
                 if (currentTile.number == adjacentAliveTile.number) {
                     currentTile.number *= 2;
+                    checkBiggest(currentTile.number);
                     if (r < lowestR) {
-                        board[lowestR][c] = new Tile(currentTile.getNumber());
-                        board[r][c].state = TileState.DEAD;
+                        moveTile(r, lowestR, c, c, currentTile.number);
                     }
                     movePossible = true;
                     board[adjacentR][c].state = TileState.DEAD;
@@ -194,8 +219,7 @@ public class GameModel {
                     r = adjacentR - 1;
                 } else {
                     if (r < lowestR) {
-                        board[lowestR][c] = new Tile(currentTile.getNumber());
-                        board[r][c].state = TileState.DEAD;
+                        moveTile(r, lowestR, c, c, currentTile.number);
                         movePossible = true;
                     }
                     lowestR--;
@@ -206,6 +230,18 @@ public class GameModel {
         if (movePossible) {
             dropTile();
         }
+    }
+
+    private int findAdjacentDown(int r, int c) {
+        int adjacentR = r - 1;
+        while (adjacentR > -1) {
+            if (board[adjacentR][c].isDead()) {
+                adjacentR--;
+            } else {
+                return adjacentR;
+            }
+        }
+        return adjacentR;
     }
 
     public void left() {
@@ -220,29 +256,21 @@ public class GameModel {
                     continue;
                 }
                 Tile adjacentAliveTile;
-                int adjacentC = c + 1;
-                while (adjacentC < boardLen) {
-                    if (board[r][adjacentC].isDead()) {
-                        adjacentC++;
-                    } else {
-                        break;
-                    }
-                }
+                int adjacentC = findAdjacentLeft(r, c);
                 if (adjacentC < boardLen) {
                     adjacentAliveTile = board[r][adjacentC];
                 } else {
                     if (c > leftmostC) {
-                        board[r][leftmostC] = new Tile(currentTile.getNumber());
-                        board[r][c].state = TileState.DEAD;
+                        moveTile(r, r, c, leftmostC, currentTile.number);
                         movePossible = true;
                     }
                     break;
                 }
                 if (currentTile.number == adjacentAliveTile.number) {
                     currentTile.number *= 2;
+                    checkBiggest(currentTile.number);
                     if (c > leftmostC) {
-                        board[r][leftmostC] = new Tile(currentTile.getNumber());
-                        board[r][c].state = TileState.DEAD;
+                        moveTile(r, r, c, leftmostC, currentTile.number);
                     }
                     movePossible = true;
                     board[r][adjacentC].state = TileState.DEAD;
@@ -250,8 +278,7 @@ public class GameModel {
                     c = adjacentC + 1;
                 } else {
                     if (c > leftmostC) {
-                        board[r][leftmostC] = new Tile(currentTile.getNumber());
-                        board[r][c].state = TileState.DEAD;
+                        moveTile(r, r, c, leftmostC, currentTile.number);
                         movePossible = true;
                     }
                     leftmostC++;
@@ -264,6 +291,17 @@ public class GameModel {
         }
     }
 
+    private int findAdjacentLeft(int r, int c) {
+        int adjacentC = c + 1;
+        while (adjacentC < boardLen) {
+            if (board[r][adjacentC].isDead()) {
+                adjacentC++;
+            } else {
+                return adjacentC;
+            }
+        }
+        return adjacentC;
+    }
     public void right() {
         boolean movePossible = false;
         for (int r = 0; r < boardLen; r++) {
@@ -276,29 +314,21 @@ public class GameModel {
                     continue;
                 }
                 Tile adjacentAliveTile;
-                int adjacentC = c - 1;
-                while (adjacentC > -1) {
-                    if (board[r][adjacentC].isDead()) {
-                        adjacentC--;
-                    } else {
-                        break;
-                    }
-                }
+                int adjacentC = findAdjacentRight(r, c);
                 if (adjacentC > -1) {
                     adjacentAliveTile = board[r][adjacentC];
                 } else {
                     if (c < rightmostC) {
-                        board[r][rightmostC] = new Tile(currentTile.getNumber());
-                        board[r][c].state = TileState.DEAD;
+                        moveTile(r, r, c, rightmostC, currentTile.number);
                         movePossible = true;
                     }
                     break;
                 }
                 if (currentTile.number == adjacentAliveTile.number) {
                     currentTile.number *= 2;
+                    checkBiggest(currentTile.number);
                     if (c < rightmostC) {
-                        board[r][rightmostC] = new Tile(currentTile.getNumber());
-                        board[r][c].state = TileState.DEAD;
+                        moveTile(r, r, c, rightmostC, currentTile.number);
                     }
                     movePossible = true;
                     board[r][adjacentC].state = TileState.DEAD;
@@ -306,8 +336,7 @@ public class GameModel {
                     c = adjacentC - 1;
                 } else {
                     if (c < rightmostC) {
-                        board[r][rightmostC] = new Tile(currentTile.getNumber());
-                        board[r][c].state = TileState.DEAD;
+                        moveTile(r, r, c, rightmostC, currentTile.number);
                         movePossible = true;
                     }
                     rightmostC--;
@@ -319,6 +348,39 @@ public class GameModel {
             dropTile();
         }
     }
+
+    private int findAdjacentRight(int r, int c) {
+        int adjacentC = c - 1;
+        while (adjacentC > -1) {
+            if (board[r][adjacentC].isDead()) {
+                adjacentC--;
+            } else {
+                return adjacentC;
+            }
+        }
+        return adjacentC;
+    }
+
+    public Tile getTile(int r, int c) {
+        return board[r][c];
+    }
+
+    public int getBoardLen() {
+        return boardLen;
+    }
+
+    public boolean getHasWon() {
+        return hasWon;
+    }
+
+    public boolean getHasLost() {
+        return hasLost;
+    }
+
+    public void endGame() {
+        System.exit(0);
+    }
+
 
     // For debugging purposes
     public void printBoard() {
@@ -352,20 +414,12 @@ public class GameModel {
         return padding;
     }
 
-    public Tile getTile(int r, int c) {
-        return board[r][c];
+    public void setHasWon() {
+        hasWon = true;
     }
 
-    public int getBoardLen() {
-        return boardLen;
-    }
-
-    public boolean getHasWon() {
-        return hasWon;
-    }
-
-    public boolean getHasLost() {
-        return hasLost;
+    public void setHasLost() {
+        hasLost = true;
     }
 
 }
